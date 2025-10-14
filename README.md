@@ -135,13 +135,18 @@ pre-commit run --all-files
 
 ## Cite
 ```
-@misc{zhang2025ldpt,
-      title={Leveraging Dual Process Theory in Language Agent Framework for Real-time Simultaneous Human-AI Collaboration}, 
-      author={Shao Zhang and Xihuai Wang and Wenhao Zhang and Chaoran Li and Junru Song and Tingyu Li and Lin Qiu and Xuezhi Cao and Xunliang Cai and Wen Yao and Weinan Zhang and Xinbing Wang and Ying Wen},
-      year={2025},
-      eprint={2502.11882},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2502.11882}, 
+@inproceedings{zhang-etal-2025-leveraging,
+    title = "Leveraging Dual Process Theory in Language Agent Framework for Real-time Simultaneous Human-{AI} Collaboration",
+    author = "Zhang, Shao  and Wang, Xihuai  and Zhang, Wenhao  and Li, Chaoran  and Song, Junru  and Li, Tingyu  and Qiu, Lin  and Cao, Xuezhi  and Cai, Xunliang  and Yao, Wen  and Zhang, Weinan and Wang, Xinbing  and Wen, Ying",
+    editor = "Che, Wanxiang  and Nabende, Joyce  and Shutova, Ekaterina  and Pilehvar, Mohammad Taher",
+    booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2025",
+    address = "Vienna, Austria",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.acl-long.206/",
+    doi = "10.18653/v1/2025.acl-long.206",
+    pages = "4081--4108",
+    ISBN = "979-8-89176-251-0",
 }
 ```
