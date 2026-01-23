@@ -5,7 +5,11 @@ from datetime import datetime
 
 import torch
 import yaml
-from yamlinclude import YamlIncludeConstructor
+
+try:  # Prefer upstream dependency name, fallback to pyyaml-include
+    from yamlinclude import YamlIncludeConstructor
+except ImportError:
+    from yaml_include.constructor import Constructor as YamlIncludeConstructor  # type: ignore
 
 from coop_marl.utils import Dotdict
 from coop_marl.utils.logger import get_logger, pblock
@@ -13,6 +17,19 @@ from coop_marl.utils.utils import update_existing_keys
 from llms.get_llm_output import valid_models
 from llms.get_llm_output_act import valid_models as valid_models_act
 
+def _adapt_yaml_constructor(constructor_cls):
+    if hasattr(constructor_cls, "add_to_loader_class"):
+        return constructor_cls
+
+    class _Adapter(constructor_cls):  # type: ignore[misc]
+        @classmethod
+        def add_to_loader_class(cls, loader_class):
+            yaml.add_constructor("!inc", cls(), Loader=loader_class)
+
+    return _Adapter
+
+
+YamlIncludeConstructor = _adapt_yaml_constructor(YamlIncludeConstructor)
 YamlIncludeConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
 
 DEF_CONFIG = "def_config"

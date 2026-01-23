@@ -11,9 +11,27 @@ import numpy as np
 import torch
 import yaml
 from PIL import Image
-from yamlinclude import YamlIncludeConstructor
+try:
+    from yamlinclude import YamlIncludeConstructor
+except ImportError:
+    from yaml_include.constructor import Constructor as YamlIncludeConstructor  # type: ignore
 
 from coop_marl.utils import Arrdict, arrdict
+
+
+def _adapt_yaml_constructor(constructor_cls):
+    if hasattr(constructor_cls, "add_to_loader_class"):
+        return constructor_cls
+
+    class _Adapter(constructor_cls):  # type: ignore[misc]
+        @classmethod
+        def add_to_loader_class(cls, loader_class):
+            yaml.add_constructor("!inc", cls(), Loader=loader_class)
+
+    return _Adapter
+
+
+YamlIncludeConstructor = _adapt_yaml_constructor(YamlIncludeConstructor)
 
 """taken from: https://stackoverflow.com/questions/1389180/automatically-initialize-instance-variables"""
 
