@@ -3,7 +3,7 @@ import copy
 import random
 from collections import defaultdict, namedtuple
 
-import gym
+import gymnasium as gym
 import numpy as np
 from gym_cooking.cooking_book.recipe_drawer import NUM_GOALS, RECIPES
 from gym_cooking.cooking_world.abstract_classes import *
@@ -11,8 +11,9 @@ from gym_cooking.cooking_world.cooking_world import CookingWorld
 from gym_cooking.cooking_world.world_objects import *
 from loguru import logger
 from pettingzoo import AECEnv
-from pettingzoo.utils import agent_selector, wrappers
-from pettingzoo.utils.conversions import to_parallel_wrapper
+from pettingzoo.utils import wrappers
+from pettingzoo.utils.agent_selector import agent_selector
+from pettingzoo.utils.conversions import aec_to_parallel_wrapper as to_parallel_wrapper
 
 
 class to_harl_parallel_wrapper(to_parallel_wrapper):
@@ -205,7 +206,8 @@ class CookingEnvironment(AECEnv):
         self.total_score = 0
         self.world.total_score = 0
         self._cumulative_rewards = dict(zip(self.agents, [0 for _ in self.agents]))
-        self.dones = dict(zip(self.agents, [False for _ in self.agents]))
+        self.terminations = dict(zip(self.agents, [False for _ in self.agents]))
+        self.truncations = dict(zip(self.agents, [False for _ in self.agents]))
         self.infos = dict(zip(self.agents, [{} for _ in self.agents]))
         self.accumulated_actions = []
         self.current_tensor_observation = dict(
@@ -358,7 +360,8 @@ class CookingEnvironment(AECEnv):
         )
         self.rewards = dict(zip(self.agents, [0 for _ in self.agents]))
         self._cumulative_rewards = dict(zip(self.agents, [0 for _ in self.agents]))
-        self.dones = dict(zip(self.agents, [False for _ in self.agents]))
+        self.terminations = dict(zip(self.agents, [False for _ in self.agents]))
+        self.truncations = dict(zip(self.agents, [False for _ in self.agents]))
         self.infos = dict(zip(self.agents, [{} for _ in self.agents]))
         self.accumulated_actions = []
         self.score = 0
@@ -415,7 +418,7 @@ class CookingEnvironment(AECEnv):
         }
 
         for idx, agent in enumerate(self.agents):
-            self.dones[agent] = done
+            self.terminations[agent] = done
 
             """
             reward type
@@ -423,7 +426,7 @@ class CookingEnvironment(AECEnv):
             self.rewards[agent] = action_rewards[idx] * interact_rewards[idx] - self.step_cost
             self.infos[agent] = info
 
-        self.agents = [agent for agent in self.agents if not self.dones[agent]]
+        self.agents = [agent for agent in self.agents if not self.terminations[agent]]
 
     def observe(self, agent):
         observation = []
